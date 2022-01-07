@@ -1,19 +1,20 @@
 import torch
+from torch.optim import Optimizer
 
 class Optimizer:
-    def __init__(self,optimizer,params):
+    def __init__(self,optimizer:Optimizer,params:dict):
         """
         Optimizer class
 
         Args:
-            optimizer (torch.optim.Optimizer): optimizer
+            optimizer (Optimizer): optimizer
             params (dict): dictionary of parameters
         """        
         self.optimizer = optimizer
         self.params = params
         self._set_params(self,self.params)
 
-    def _set_params(self,params):
+    def _set_params(self,params:dict):
         """
         Method to change some attributes of the optimizer
 
