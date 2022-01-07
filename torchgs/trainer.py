@@ -5,7 +5,7 @@ from .optimizers import Optimizer
 
 
 class Trainer:
-    def __init__(self, params:dict):
+    def __init__(self, params: dict):
         """
         Trainer class for training a pytorch model
 
@@ -16,7 +16,7 @@ class Trainer:
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self._set_params(params)
 
-    def _set_params(self, params:dict={}):
+    def _set_params(self, params: dict = {}):
         """
         Sets the parameters of the Trainer to the supplied
 
@@ -40,15 +40,17 @@ class Trainer:
             'metric') == None, 'params["metric"] must an instance of the `metrics.Metric` class.'
 
         self.net = params.get('net') or self.net
-        self.lossfn = params.get('lossfn') or params.get('criterion') or self.lossfn
+        self.lossfn = params.get('lossfn') or params.get(
+            'criterion') or self.lossfn
         self.optimizer = params.get('optimizer') or self.optimizer
         self.lrschedulers = (([params.get('lrschedulers')] if type(params.get(
             'lrschedulers')) != list else params.get('lrschedulers'))if params.get('lrschedulers') != None else []) or self.lrschedulers if 'lrschedulers' in dir(self) else []
-        self.metric = params.get('metric') or self.metric if 'metric' in dir(self) else None
+        self.metric = params.get(
+            'metric') or self.metric if 'metric' in dir(self) else None
         self.performance = {}
         self.net.to(self.device)
 
-    def train_on(self, trainloader:DataLoader, testloader:DataLoader=None, epochs:int=1):
+    def train_on(self, trainloader: DataLoader, testloader: DataLoader = None, epochs: int = 1):
         """
         Method to train the network
 
@@ -83,7 +85,8 @@ class Trainer:
                 sched.step(loss)
 
             if self.metric:
-                self.performance['train'][epoch+1] = self.metric.evaluate(self.net,trainloader)
+                self.performance['train'][epoch +
+                                          1] = self.metric.evaluate(self.net, trainloader)
             else:
                 self.performance['train'][epoch+1] = loss.item()
 
@@ -93,8 +96,9 @@ class Trainer:
                 if testloader:
 
                     if self.metric:
-                        self.performance['test'][epoch+1] = self.metric.evaluate(self.net,testloader)
-                    
+                        self.performance['test'][epoch +
+                                                 1] = self.metric.evaluate(self.net, testloader)
+
                     else:
 
                         for x, y in testloader:
