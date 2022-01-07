@@ -1,7 +1,7 @@
 import torch
 
 class Optimizer:
-    def __init__(self,optimizer:type,params:dict):
+    def __init__(self,optimizer:type,net_parameters,params:dict):
         """
         Optimizer class
 
@@ -10,7 +10,7 @@ class Optimizer:
             params (dict): dictionary of parameters
         """        
         self.params = params
-        self.optimizer = optimizer(*params)
+        self.optimizer = optimizer(net_parameters,**params or {})
 
 
 class LRscheduler:
@@ -23,4 +23,4 @@ class LRscheduler:
             params (dict): dictionary of parameters
         """        
         self.params = params
-        self.lrscheduler = lrscheduler(*params)
+        self.lrscheduler = lrscheduler(**params)
