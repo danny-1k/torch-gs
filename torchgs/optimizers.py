@@ -13,7 +13,7 @@ class Optimizer:
         self.optimizer = optimizer(*params)
 
 
-class Lrscheduler:
+class LRscheduler:
     def __init__(self,lrscheduler:type,params:dict):
         """
         Lrscheduler class
