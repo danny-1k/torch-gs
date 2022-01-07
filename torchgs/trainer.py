@@ -38,14 +38,13 @@ class Trainer:
         assert isinstance(params.get('metric'), Metric) or params.get(
             'metric') == None, 'params["metric"] must an instance of the `metrics.Metric` class.'
 
-        self.net = params.get('net')
-        self.lossfn = params.get('lossfn') or params.get('criterion')
-        self.optimizer = params.get('optimizer')
-        self.lrschedulers = ([params.get('lrschedulers')] if type(params.get(
-            'lrschedulers')) != list else params.get('lrschedulers'))if params.get('lrschedulers') != None else []
-        self.metric = params.get('metric')
+        self.net = params.get('net') or self.net
+        self.lossfn = params.get('lossfn') or params.get('criterion') or self.lossfn
+        self.optimizer = params.get('optimizer') or self.optimizer
+        self.lrschedulers = (([params.get('lrschedulers')] if type(params.get(
+            'lrschedulers')) != list else params.get('lrschedulers'))if params.get('lrschedulers') != None else []) or self.lrschedulers
+        self.metric = params.get('metric') or self.metric
         self.performance = {}
-
         self.net.to(self.device)
 
     def train_on(self, trainloader:DataLoader, testloader:DataLoader=None, epochs:int=1):
