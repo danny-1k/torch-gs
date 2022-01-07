@@ -9,7 +9,7 @@ from .optimizers import Optimizer,LRscheduler
 from .metrics import Loss
 
 class GridSearch:
-    def __init__(self, param_space, trainer):
+    def __init__(self, param_space:dict, net:nn.Module):
         """
         Grid search class for finding the optimal 
         set of hyperparameters
@@ -23,9 +23,8 @@ class GridSearch:
             self.param_space[space]) for space in self.param_space}  # generate all possible combinations
                                                                      # of parameters for each group
         self.search_space = self.gen_combinations(self.search_space) # generate all possible combinations of combinations
-        self.trainer = trainer
-        # self.original_trainer = copy.deepcopy(self.trainer)
-        # self.original_net = copy.deepcopy(self.trainer.net)
+        self.net = net
+
 
     def gen_combinations(self, param_space):
         """
@@ -71,14 +70,39 @@ class GridSearch:
         return params
 
     def fit(self, trainset: Dataset, testset: Dataset = None):
+        """
+        Performs the grid search and returns the summary
+
+        Args:
+            trainset (Dataset): train dataset
+            testset (Dataset, optional): test dataset. Defaults to None.
+        """        
         assert isinstance(
             trainset, Dataset), '`trainset` must be a `torch.utils.data.Dataset` instance'
         assert isinstance(
             testset, Dataset) or testset == None, '`trainset` must be a `torch.utils.data.Dataset` instance'
 
-        trainer_params = self.search_space.get('trainer')
-        optimizer_params = self.search_space.get('optimizer')
-        lrschedulers_params = self.search_space.get('lrchedulers')
+        results = {}
+
+        for idx,hypothesis in enumerate(self.search_space):
+            performance = self.fit_once(
+                net=copy.deepcopy(self.net),
+                params=hypothesis,
+                train=trainset,
+                test=testset,
+            )
+
+            results[idx] = {'parameter_set':hypothesis,'performance':performance}
+
+
+        return results
+
+
+
+
+        # trainer_params = self.search_space.get('trainer')
+        # optimizer_params = self.search_space.get('optimizer')
+        # lrschedulers_params = self.search_space.get('lrchedulers')
 
     def fit_once(self,net,params,train,test):
         """
@@ -110,20 +134,20 @@ class GridSearch:
             lrschedulers = None
 
 
-        optimizer = Optimizer(trainer_params.get('optimizer'),optimizer_params)
+        optimizer = Optimizer(trainer_params.get('optimizer'),net.parameters(),optimizer_params)
 
         trainer = Trainer(
             {
-                'net':net,
-                'lossfn':trainer_params.get('lossfn'),
+                'net':trainer_params.get('net') or net,
+                'lossfn':copy.deepcopy(trainer_params.get('lossfn')),
                 'optimizer':optimizer,
                 'lrschedulers':lrschedulers,
-                'metric':trainer_params.get('metric'),
+                'metric':copy.deepcopy(trainer_params.get('metric')),
             }
         )
 
-        train_loader = DataLoader(train,*train_loader_params)
-        test_loader = DataLoader(test,*test_loader_params)
+        train_loader = DataLoader(train,**train_loader_params)
+        test_loader = DataLoader(test,**test_loader_params) if test else None
 
 
         return trainer.train_on(
