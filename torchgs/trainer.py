@@ -1,9 +1,10 @@
 import torch
+from torch.utils.data import DataLoader
 from .metrics import Metric
 
 
 class Trainer:
-    def __init__(self, params):
+    def __init__(self, params:dict):
         """
         Trainer class for training a pytorch model
 
@@ -14,7 +15,7 @@ class Trainer:
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self._set_params(params)
 
-    def _set_params(self, params={}):
+    def _set_params(self, params:dict={}):
         """
         Sets the parameters of the Trainer to the supplied
 
@@ -47,22 +48,22 @@ class Trainer:
 
         self.net.to(self.device)
 
-    def train_on(self, trainloader, testloader=None, epochs=1):
+    def train_on(self, trainloader:DataLoader, testloader:DataLoader=None, epochs:int=1):
         """
         Method to train the network
 
         Args:
-            trainloader (torch.utils.data.DataLoader): Train dataloader for training the model.
-            testloader (torch.utils.data.DataLoader, optional): Test dataloader for testing the models performance. Defaults to None.
+            trainloader (DataLoader): Train dataloader for training the model.
+            testloader (DataLoader, optional): Test dataloader for testing the models performance. Defaults to None.
             epochs (int, optional): Number of epochs to train the network for. Defaults to 1.
         """
         assert isinstance(
-            trainloader, torch.utils.data.DataLoader), '`trainloader` must be a torch DataLoader'
+            trainloader, DataLoader), '`trainloader` must be a torch DataLoader'
         self.performance['train'] = {}
 
         if testloader != None:
             assert isinstance(
-                testloader, torch.utils.data.DataLoader), '`testloader` must be a torch DataLoader'
+                testloader, DataLoader), '`testloader` must be a torch DataLoader'
             self.performance['test'] = {}
 
         for epoch in range(epochs):
