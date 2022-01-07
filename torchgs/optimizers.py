@@ -1,25 +1,26 @@
 import torch
-from torch.optim import Optimizer
 
 class Optimizer:
-    def __init__(self,optimizer:Optimizer,params:dict):
+    def __init__(self,optimizer:type,params:dict):
         """
         Optimizer class
 
         Args:
-            optimizer (Optimizer): optimizer
+            optimizer (type): optimizer
             params (dict): dictionary of parameters
         """        
-        self.optimizer = optimizer
         self.params = params
-        self._set_params(self,self.params)
+        self.optimizer = optimizer(*params)
 
-    def _set_params(self,params:dict):
+
+class Lrscheduler:
+    def __init__(self,lrscheduler:type,params:dict):
         """
-        Method to change some attributes of the optimizer
+        Lrscheduler class
 
         Args:
-            params (dict): dict of attributes and values
+            lrscheduler (type): lrscheduler
+            params (dict): dictionary of parameters
         """        
-        for param in params:
-            self.optimizer.__setattr__(param,self.params[param])
+        self.params = params
+        self.lrscheduler = lrscheduler(*params)
