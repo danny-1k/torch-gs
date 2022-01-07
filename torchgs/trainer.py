@@ -1,6 +1,7 @@
 import torch
 from torch.utils.data import DataLoader
 from .metrics import Metric
+from .optimizers import Optimizer
 
 
 class Trainer:
@@ -34,7 +35,7 @@ class Trainer:
         assert isinstance(params.get('lossfn'), torch.nn.Module) or isinstance(params.get(
             'criterion'), torch.nn.Module), 'params["lossfn"] or params["criterion"] must be an instance of the `torch.nn.Module` class.'
         assert isinstance(params.get(
-            'optimizer'), torch.optim.Optimizer), 'params["optimizer"] must be an instance of the `torch.optim.Optimizer` class.'
+            'optimizer'), Optimizer), 'params["optimizer"] must be an instance of the `Optimizer` class.'
         assert isinstance(params.get('metric'), Metric) or params.get(
             'metric') == None, 'params["metric"] must an instance of the `metrics.Metric` class.'
 
@@ -42,8 +43,8 @@ class Trainer:
         self.lossfn = params.get('lossfn') or params.get('criterion') or self.lossfn
         self.optimizer = params.get('optimizer') or self.optimizer
         self.lrschedulers = (([params.get('lrschedulers')] if type(params.get(
-            'lrschedulers')) != list else params.get('lrschedulers'))if params.get('lrschedulers') != None else []) or self.lrschedulers
-        self.metric = params.get('metric') or self.metric
+            'lrschedulers')) != list else params.get('lrschedulers'))if params.get('lrschedulers') != None else []) or self.lrschedulers if 'lrschedulers' in dir(self) else []
+        self.metric = params.get('metric') or self.metric if 'metric' in dir(self) else None
         self.performance = {}
         self.net.to(self.device)
 
@@ -71,30 +72,38 @@ class Trainer:
             for x, y in trainloader:
                 x = x.to(self.device)
                 y = y.to(self.device)
-                self.optimizer.zero_grad()
+                self.optimizer.optimizer.zero_grad()
 
                 p = self.net(x)
                 loss = self.lossfn(p, y)
                 loss.backward()
-                self.optimizer.step()
+                self.optimizer.optimizer.step()
 
             for sched in self.lrschedulers:
                 sched.step(loss)
 
-            self.performance['train'][epoch+1] = loss.item()
+            if self.metric:
+                self.performance['train'][epoch+1] = self.metric.evaluate(self.net,trainloader)
+            else:
+                self.performance['train'][epoch+1] = loss.item()
 
             self.net.eval()
             with torch.no_grad():
 
                 if testloader:
 
-                    for x, y in testloader:
-                        x = x.to(self.device)
-                        y = y.to(self.device)
+                    if self.metric:
+                        self.performance['test'][epoch+1] = self.metric.evaluate(self.net,testloader)
+                    
+                    else:
 
-                        p = self.net(x)
-                        loss = self.lossfn(p, y)
+                        for x, y in testloader:
+                            x = x.to(self.device)
+                            y = y.to(self.device)
 
-                    self.performance['test'][epoch+1] = loss.item()
+                            p = self.net(x)
+                            loss = self.lossfn(p, y)
+
+                        self.performance['test'][epoch+1] = loss.item()
 
         return self.performance
