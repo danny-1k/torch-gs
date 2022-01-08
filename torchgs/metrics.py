@@ -74,7 +74,7 @@ class Recall(Metric):
             recall = 0
             for x, y in loader:
                 pred = net(x)
-                recall += recall_score(y,pred.argmax(dim=1))
+                recall += recall_score(y,pred.argmax(dim=1),average='micro')
 
             recall /= len(loader.dataset)
 
@@ -92,7 +92,7 @@ class Precision(Metric):
             precision = 0
             for x, y in loader:
                 pred = net(x)
-                precision += precision_score(y,pred.argmax(dim=1))
+                precision += precision_score(y,pred.argmax(dim=1),average='micro')
 
             precision /= len(loader.dataset)
 
@@ -109,7 +109,7 @@ class F1(Metric):
             f1 = 0
             for x, y in loader:
                 pred = net(x)
-                f1 += precision_score(y,pred.argmax(dim=1))
+                f1 += precision_score(y,pred.argmax(dim=1),average='micro')
 
             f1 /= len(loader.dataset)
 
