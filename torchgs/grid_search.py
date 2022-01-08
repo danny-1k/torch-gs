@@ -5,6 +5,8 @@ from .trainer import Trainer
 
 from .optimizers import Optimizer, LRscheduler
 
+from tabulate import tabulate
+
 
 class GridSearch:
     def __init__(self, param_space: dict, net: nn.Module=None):
@@ -150,11 +152,36 @@ class GridSearch:
         )
 
 
-    def best(self,result:dict,topk:int=3,using:str='mean'):
+    def best(self,result:dict,topk:int=3,using:str='mean',should_print:bool=False):
         assert using in ['min','max','mean','last','std'], '`using` must be "min","max","mean","last" or "std"'
 
         result = dict(sorted(result.items(), key=lambda key_value: key_value[1]['performance'][using])[::-1][:topk])
 
+        if should_print:
+
+            first = result[list(result.keys())[0]]
+
+            trainer_headers = list(first['parameter_set']['trainer'].keys())
+            train_loader_headers = list(first['parameter_set']['train_loader'].keys())
+            test_loader_headers = list(first['parameter_set']['test_loader'].keys()) if first['parameter_set'].get('test_loader') else None
+            optimizer_headers = list(first['parameter_set']['optimizer'].keys())
+            performance_headers = list(first['performance'].keys())
+
+            headers = [*trainer_headers,*train_loader_headers,*(test_loader_headers or []),*optimizer_headers,*performance_headers]
+
+            table = []
+
+            for item in result.values():
+                trainer_values = item['parameter_set']['trainer'].values()
+                train_loader_values = item['parameter_set']['train_loader'].values()
+                test_loader_values = item['parameter_set']['test_loader'].values() if item['parameter_set'].get('test_loader') else []
+                optimizer_values = item['parameter_set']['optimizer'].values()
+                performance_values = item['performance'].values()
+
+                values = [*trainer_values,*train_loader_values,*test_loader_values,*optimizer_values,*performance_values]
+                table.append(values)
+
+            print(tabulate(table,headers,tablefmt='pretty'))
         return result
 
 
