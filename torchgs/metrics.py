@@ -58,7 +58,7 @@ class Accuracy(Metric):
             accuracy = 0
             for x, y in loader:
                 pred = net(x)
-                accuracy += sum(pred.argmax(dim=1) == y)
+                accuracy += sum(pred.argmax(dim=1) == y).item()
             accuracy /= len(loader.dataset)
 
         return accuracy
@@ -74,7 +74,7 @@ class Recall(Metric):
             recall = 0
             for x, y in loader:
                 pred = net(x)
-                recall += recall_score(y,pred.argmax(dim=1),average='micro')
+                recall += recall_score(y,pred.argmax(dim=1),average='micro').item()
 
             recall /= len(loader.dataset)
 
@@ -92,7 +92,7 @@ class Precision(Metric):
             precision = 0
             for x, y in loader:
                 pred = net(x)
-                precision += precision_score(y,pred.argmax(dim=1),average='micro')
+                precision += precision_score(y,pred.argmax(dim=1),average='micro').item()
 
             precision /= len(loader.dataset)
 
@@ -109,7 +109,7 @@ class F1(Metric):
             f1 = 0
             for x, y in loader:
                 pred = net(x)
-                f1 += precision_score(y,pred.argmax(dim=1),average='micro')
+                f1 += precision_score(y,pred.argmax(dim=1),average='micro').item()
 
             f1 /= len(loader.dataset)
 
