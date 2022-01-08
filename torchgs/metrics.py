@@ -113,7 +113,7 @@ class F1(Metric):
             f1 = 0
             for x, y in loader:
                 pred = net(x)
-                f1 += precision_score(y,pred.argmax(dim=1),average='micro').item()
+                f1 += f1_score(y,pred.argmax(dim=1),average='micro').item()
 
             f1 /= len(loader.dataset)
 
