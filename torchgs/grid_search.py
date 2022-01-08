@@ -134,7 +134,7 @@ class GridSearch:
             lrschedulers = None
 
         optimizer = Optimizer(trainer_params.get(
-            'optimizer'), net.parameters(), optimizer_params)
+            'optimizer'), trainer_params.get('net') or net, optimizer_params)
 
         trainer = Trainer(
             {
