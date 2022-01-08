@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 
+from sklearn.metrics import precision_score,recall_score,f1_score
+
 
 class Metric:
     def __init__(self):
@@ -57,7 +59,7 @@ class Accuracy(Metric):
             for x, y in loader:
                 pred = net(x)
                 accuracy += sum(pred.argmax(dim=1) == y)
-            accuracy = accuracy/len(loader.dataset)
+            accuracy /= len(loader.dataset)
 
         return accuracy
 
@@ -69,7 +71,15 @@ class Recall(Metric):
 
     def _evaluate_func(self, net: nn.Module, loader: DataLoader):
         with torch.no_grad():
-            pass
+            recall = 0
+            for x, y in loader:
+                pred = net(x)
+                recall += recall_score(y,pred.argmax(dim=1))
+
+            recall /= len(loader.dataset)
+
+        return recall
+
 
 
 class Precision(Metric):
@@ -79,7 +89,14 @@ class Precision(Metric):
 
     def _evaluate_func(self, net: nn.Module, loader: DataLoader):
         with torch.no_grad():
-            pass
+            precision = 0
+            for x, y in loader:
+                pred = net(x)
+                precision += precision_score(y,pred.argmax(dim=1))
+
+            precision /= len(loader.dataset)
+
+        return precision
 
 
 class F1(Metric):
@@ -89,4 +106,11 @@ class F1(Metric):
 
     def _evaluate_func(self, net: nn.Module, loader: DataLoader):
         with torch.no_grad():
-            pass
+            f1 = 0
+            for x, y in loader:
+                pred = net(x)
+                f1 += precision_score(y,pred.argmax(dim=1))
+
+            f1 /= len(loader.dataset)
+
+        return f1
