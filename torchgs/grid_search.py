@@ -80,10 +80,11 @@ class GridSearch:
             trainset (Dataset): train dataset
             testset (Dataset, optional): test dataset. Defaults to None.
         """
-        assert isinstance(
-            trainset, Dataset), '`trainset` must be a `torch.utils.data.Dataset` instance'
-        assert isinstance(
-            testset, Dataset) or testset == None, '`trainset` must be a `torch.utils.data.Dataset` instance'
+        if not isinstance(trainset, Dataset):
+            raise ValueError('`trainset` must be a `torch.utils.data.Dataset` instance')
+
+        if not (isinstance(testset, Dataset) or testset == None):
+            raise ValueError('`trainset` must be a `torch.utils.data.Dataset` instance')
 
         results = {}
 
@@ -155,7 +156,8 @@ class GridSearch:
 
 
     def best(self,result:dict,topk:int=3,using:str='mean',should_print:bool=False):
-        assert using in ['min','max','mean','last','std'], '`using` must be "min","max","mean","last" or "std"'
+        if not (using in ['min','max','mean','last','std']):
+            raise ValueError('`using` must be "min","max","mean","last" or "std"')
 
         print(f'\n\nTable of the top {topk} parameters found\n')
 

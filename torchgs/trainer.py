@@ -24,20 +24,27 @@ class Trainer:
             params (dict, optional): dictionary containing objects
             necessary to train the network. Defaults to {}.
         """
-        assert params.get('net') != None, 'params["net"] must not be None.'
-        assert params.get('lossfn') != None or params.get(
-            'criterion') != None, 'params["lossfn"] or params["criterion"] must not be None.'
-        assert params.get(
-            'optimizer') != None, 'params["optimizer"] must not be None.'
+        if params.get('net') == None:
+            raise ValueError('params["net"] must not be None.')
+        if (params.get('lossfn') == None) and (params.get(
+            'criterion') == None):
+            raise ValueError('params["lossfn"] or params["criterion"] must not be None.')
+        if params.get(
+            'optimizer') == None:
+            raise ValueError('params["optimizer"] must not be None.')
 
-        assert isinstance(params.get(
-            'net'), torch.nn.Module), 'params["net"] must be an instance of the `torch.nn.Module` class.'
-        assert isinstance(params.get('lossfn'), torch.nn.Module) or isinstance(params.get(
-            'criterion'), torch.nn.Module), 'params["lossfn"] or params["criterion"] must be an instance of the `torch.nn.Module` class.'
-        assert isinstance(params.get(
-            'optimizer'), Optimizer), 'params["optimizer"] must be an instance of the `Optimizer` class.'
-        assert isinstance(params.get('metric'), Metric) or params.get(
-            'metric') == None, 'params["metric"] must an instance of the `metrics.Metric` class.'
+        if not isinstance(params.get(
+            'net'), torch.nn.Module):
+            raise ValueError('params["net"] must be an instance of the `torch.nn.Module` class.')
+        if not isinstance(params.get('lossfn'), torch.nn.Module) or isinstance(params.get(
+            'criterion'), torch.nn.Module):
+            raise ValueError('params["lossfn"] or params["criterion"] must be an instance of the `torch.nn.Module` class.')
+        if not isinstance(params.get(
+            'optimizer'), Optimizer):
+            raise ValueError('params["optimizer"] must be an instance of the `Optimizer` class.')
+        if not (isinstance(params.get('metric'), Metric) or params.get(
+            'metric') == None):
+            raise ValueError('params["metric"] must an instance of the `metrics.Metric` class.')
 
         self.net = params.get('net') or self.net
         self.lossfn = params.get('lossfn') or params.get(
@@ -59,12 +66,14 @@ class Trainer:
             testloader (DataLoader, optional): Test dataloader for testing the models performance. Defaults to None.
             epochs (int, optional): Number of epochs to train the network for. Defaults to 1.
         """
-        assert isinstance(
-            trainloader, DataLoader), '`trainloader` must be a torch DataLoader'
+        if not isinstance(
+            trainloader, DataLoader):
+                raise ValueError('`trainloader` must be a torch DataLoader')
 
         if testloader != None:
-            assert isinstance(
-                testloader, DataLoader), '`testloader` must be a torch DataLoader'
+            if not isinstance(
+                testloader, DataLoader):
+                raise ValueError('`testloader` must be a torch DataLoader')
 
         for epoch in range(epochs):
 
