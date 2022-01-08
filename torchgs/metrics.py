@@ -13,15 +13,18 @@ class Metric:
     def get_performance(self, performance: dict):
         vals = torch.Tensor(list(performance.values()))
 
-        min_val = torch.min(vals)
-        max_val = torch.man(vals)
-        mean_val = torch.mean(vals)
-        std_val = torch.std(vals)
+        min_val = torch.min(vals).item()
+        max_val = torch.mean(vals).item()
+        mean_val = torch.mean(vals).item()
+        std_val = torch.std(vals).item()
+        last = vals[-1].item()
 
         return {'min': min_val,
                 'max': max_val,
                 'mean': mean_val,
-                'std': std_val}
+                'std': std_val,
+                'last': last,
+                }
 
 
 class Loss(Metric):
