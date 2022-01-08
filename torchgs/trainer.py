@@ -1,6 +1,6 @@
 import torch
 from torch.utils.data import DataLoader
-from .metrics import Metric
+from .metrics import Metric,Loss
 from .optimizers import Optimizer
 
 
@@ -46,7 +46,7 @@ class Trainer:
         self.lrschedulers = (([params.get('lrschedulers')] if type(params.get(
             'lrschedulers')) != list else params.get('lrschedulers'))if params.get('lrschedulers') != None else []) or self.lrschedulers if 'lrschedulers' in dir(self) else []
         self.metric = params.get(
-            'metric') or self.metric if 'metric' in dir(self) else None
+            'metric') or self.metric if 'metric' in dir(self) else Loss(self.lossfn)
         self.performance = {}
         self.net.to(self.device)
 
@@ -87,27 +87,15 @@ class Trainer:
             if self.metric:
                 self.performance['train'][epoch +
                                           1] = self.metric.evaluate(self.net, trainloader)
-            else:
-                self.performance['train'][epoch+1] = loss.item()
 
             self.net.eval()
-            with torch.no_grad():
+            if testloader:
+                self.performance['test'][epoch + 1] =\
+                    self.metric.evaluate(self.net, testloader)
 
-                if testloader:
+            else:
+                 self.performance['train'][epoch + 1] =\
+                    self.metric.evaluate(self.net, trainloader)
 
-                    if self.metric:
-                        self.performance['test'][epoch +
-                                                 1] = self.metric.evaluate(self.net, testloader)
 
-                    else:
-
-                        for x, y in testloader:
-                            x = x.to(self.device)
-                            y = y.to(self.device)
-
-                            p = self.net(x)
-                            loss = self.lossfn(p, y)
-
-                        self.performance['test'][epoch+1] = loss.item()
-
-        return self.performance
+        return self.metric.get_performance(self.performance)
