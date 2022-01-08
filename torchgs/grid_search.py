@@ -5,6 +5,8 @@ from .trainer import Trainer
 
 from .optimizers import Optimizer, LRscheduler
 
+from tqdm import tqdm 
+
 from tabulate import tabulate
 
 
@@ -85,7 +87,7 @@ class GridSearch:
 
         results = {}
 
-        for idx, hypothesis in enumerate(self.search_space):
+        for idx, hypothesis in enumerate(tqdm(self.search_space)):
             performance = self.fit_once(
                 net=copy.deepcopy(self.net),
                 params=hypothesis,
@@ -157,7 +159,10 @@ class GridSearch:
 
         print(f'\n\nTable of the top {topk} parameters found\n')
 
-        result = dict(sorted(result.items(), key=lambda key_value: key_value[1]['performance'][using])[::-1][:topk])
+        result = sorted(result.items(), key=lambda key_value: key_value[1]['performance'][using])
+        result = result[::-1] if result[0][1]['parameter_set']['trainer']['metric'].maximize else result
+        result = result[:topk]
+        result = dict(result)
 
         if should_print:
 
