@@ -61,12 +61,10 @@ class Trainer:
         """
         assert isinstance(
             trainloader, DataLoader), '`trainloader` must be a torch DataLoader'
-        self.performance['train'] = {}
 
         if testloader != None:
             assert isinstance(
                 testloader, DataLoader), '`testloader` must be a torch DataLoader'
-            self.performance['test'] = {}
 
         for epoch in range(epochs):
 
@@ -84,17 +82,13 @@ class Trainer:
             for sched in self.lrschedulers:
                 sched.step(loss)
 
-            if self.metric:
-                self.performance['train'][epoch +
-                                          1] = self.metric.evaluate(self.net, trainloader)
-
             self.net.eval()
             if testloader:
-                self.performance['test'][epoch + 1] =\
+                self.performance[epoch + 1] =\
                     self.metric.evaluate(self.net, testloader)
 
             else:
-                 self.performance['train'][epoch + 1] =\
+                 self.performance[epoch + 1] =\
                     self.metric.evaluate(self.net, trainloader)
 
 
