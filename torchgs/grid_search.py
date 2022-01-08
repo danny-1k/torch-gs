@@ -10,7 +10,7 @@ from .metrics import Loss
 
 
 class GridSearch:
-    def __init__(self, param_space: dict, net: nn.Module, seed: int = None):
+    def __init__(self, param_space: dict, net: nn.Module=None):
         """
         Grid search class for finding the optimal 
         set of hyperparameters

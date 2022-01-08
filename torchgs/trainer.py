@@ -46,7 +46,7 @@ class Trainer:
         self.lrschedulers = (([params.get('lrschedulers')] if type(params.get(
             'lrschedulers')) != list else params.get('lrschedulers'))if params.get('lrschedulers') != None else []) or self.lrschedulers if 'lrschedulers' in dir(self) else []
         self.metric = params.get(
-            'metric') or self.metric if 'metric' in dir(self) else Loss(self.lossfn)
+            'metric') or Loss(self.lossfn)
         self.performance = {}
         self.net.to(self.device)
 
