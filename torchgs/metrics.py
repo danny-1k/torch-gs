@@ -28,6 +28,10 @@ class Metric:
                 'last': last,
                 }
 
+    
+    def __repr__(self):
+        return f'Metric({type(self).__name__})'
+
 
 class Loss(Metric):
     def __init__(self, lossfn: nn.Module):

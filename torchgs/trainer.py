@@ -93,3 +93,7 @@ class Trainer:
 
 
         return self.metric.get_performance(self.performance)
+
+
+    def __repr__(self):
+        return f'Trainer(metric={self.metric},optimizer={self.optimizer},)'

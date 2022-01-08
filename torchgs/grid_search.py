@@ -156,3 +156,7 @@ class GridSearch:
         result = dict(sorted(result.items(), key=lambda key_value: key_value[1]['performance'][using])[::-1][:topk])
 
         return result
+
+
+    def __repr__(self):
+        return f'GridSearch()'

@@ -13,6 +13,10 @@ class Optimizer:
         self.optimizer = optimizer(net.parameters(), **params or {})
 
 
+    def __repr__(self):
+        return f'Optimizer({type(self.optimizer).__name__})'
+
+
 class LRscheduler:
     def __init__(self, lrscheduler: type, params: dict):
         """
@@ -24,3 +28,7 @@ class LRscheduler:
         """
         self.params = params
         self.lrscheduler = lrscheduler(**params)
+
+    
+    def __repr__(self):
+        return f'LRscheduler({type(self.lrscheduler).__name__})'
