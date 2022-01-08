@@ -153,6 +153,6 @@ class GridSearch:
     def best(self,result:dict,topk:int=3,using:str='mean'):
         assert using in ['min','max','mean','last','std'], '`using` must be "min","max","mean","last" or "std"'
 
-        result = sorted(result.items(), key=lambda key_value: key_value[1][using])[::-1][:topk]
+        result = dict(sorted(result.items(), key=lambda key_value: key_value[1]['performance'][using])[::-1][:topk])
 
         return result
