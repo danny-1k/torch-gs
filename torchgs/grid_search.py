@@ -155,6 +155,8 @@ class GridSearch:
     def best(self,result:dict,topk:int=3,using:str='mean',should_print:bool=False):
         assert using in ['min','max','mean','last','std'], '`using` must be "min","max","mean","last" or "std"'
 
+        print(f'\n\nTable of the top {topk} parameters found\n')
+
         result = dict(sorted(result.items(), key=lambda key_value: key_value[1]['performance'][using])[::-1][:topk])
 
         if should_print:
@@ -181,7 +183,7 @@ class GridSearch:
                 values = [*trainer_values,*train_loader_values,*test_loader_values,*optimizer_values,*performance_values]
                 table.append(values)
 
-            print(tabulate(table,headers,tablefmt='pretty'))
+            print(tabulate(table,headers,tablefmt='grid'))
         return result
 
 
