@@ -58,6 +58,8 @@ class GridSearch:
                     next_params = []
 
                     for idx, param in enumerate(params):
+                        if next == None:
+                            continue
                         for param_next in next:
                             orig_param = param.copy()
                             orig_param[next_key] = param_next
