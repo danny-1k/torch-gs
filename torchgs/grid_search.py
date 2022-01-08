@@ -1,12 +1,9 @@
 import copy
-import torch
 import torch.nn as nn
-from torch.optim import lr_scheduler
 from torch.utils.data import Dataset, DataLoader
 from .trainer import Trainer
 
 from .optimizers import Optimizer, LRscheduler
-from .metrics import Loss
 
 
 class GridSearch:
