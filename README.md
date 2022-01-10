@@ -79,3 +79,23 @@ best = searcher.best(results,using='mean',topk=10,should_print=True)
 Output
 
 <img src="output.png" alt="output">
+
+
+
+## torchgs
+- Trainer
+- GridSearch
+- metrics
+- optimizers
+
+## torchgs.metrics
+- Metric
+- Loss
+- Accuracy
+- Recall
+- Precision
+- F1
+
+## torchgs.optimizers
+- Optimizer
+- LRscheduler
