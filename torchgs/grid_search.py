@@ -121,8 +121,8 @@ class GridSearch:
         trainer_params = params.get('trainer')
         optimizer_params = params.get('optimizer')
         lrschedulers_params = params.get('lrchedulers')
-        train_loader_params = params.get('train_loader')
-        test_loader_params = params.get('test_loader')
+        train_loader_params = params.get('train_loader') or {}
+        test_loader_params = params.get('test_loader') or {}
 
         if type(trainer_params.get('lrchedulers')) == list:
             lrschedulers = []
