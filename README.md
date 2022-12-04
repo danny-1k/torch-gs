@@ -99,3 +99,10 @@ Output
 ## torchgs.optimizers
 - Optimizer
 - LRscheduler
+
+
+# Todo
+- Parallel Training on multiple GPUS
+- Tensorboard Integration
+
+## Pull requests are welcome, let's collab 🤲.
