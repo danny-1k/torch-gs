@@ -3,3 +3,4 @@ plan.txt
 test.py
 dist
 *.egg-info
+build
