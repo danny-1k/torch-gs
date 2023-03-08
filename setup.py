@@ -5,7 +5,7 @@ requirements = [i.strip() for i in open("requirements.txt", "r").readlines()]
 
 setuptools.setup(
     name="torchgs",
-    version="0.0.1",
+    version="0.0.2",
     author="Daniel Ik",
     author_email="codingeinstein@gmail.com",
     url="https://github.com/danny-1k/torch-gs",
