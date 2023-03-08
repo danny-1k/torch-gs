@@ -1,6 +1,7 @@
 # torchgs
 
 Pytorch wrapper for grid search of hyperparameters
+[https://github.com/danny-1k/torch-gs]
 
 ## Example
 Finding the best set of hyper-parameters and models for a classification problem
